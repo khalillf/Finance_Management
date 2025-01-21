@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+from apps import users
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,8 +28,7 @@ SECRET_KEY = 'django-insecure-df*rg7g6x-)h-od8skri2w1%3xp15t0^uoej7#bf&=d*iy(*29
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-
+AUTH_USER_MODEL = 'users.User'
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.users',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'users',  # Add the 'users' app here
 ]
 
 MIDDLEWARE = [
@@ -71,11 +74,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Finance_Management.wsgi.application'
 
+# settings.py
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',  # Allows all endpoints by default
+    ],
+    'EXCEPTION_HANDLER': 'apps.users.exceptions.custom_exception_handler',
 }
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -91,7 +101,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'finance_management',
-        'USER': 'admin1',
+        'USER': 'postgres',
         'PASSWORD': 'khalil',
         'HOST': 'localhost',
         'PORT': '5432',
@@ -128,7 +138,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-# settings.py
 import sys
 import os
 
